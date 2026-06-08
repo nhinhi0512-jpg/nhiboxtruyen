@@ -3,15 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>📚 Truyện Box | Sync GitHub + Đọc thoải mái</title>
+    <title>📚 Truyện Box | Tải JSON + Word</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        /* Biến toàn cục cho theme, font, size */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --bg-body: #f2ebe1;
             --bg-container: #fffef9;
@@ -20,16 +14,11 @@
             --card-bg: white;
             --card-border: #eedfcb;
             --filter-bg: #f5ede4;
-            --tag-bg: #f4ede4;
             --btn-bg: #d9c6ae;
             --btn-primary-bg: #b87c48;
-            --btn-primary-hover: #9a5f2e;
-            --shadow-sm: 0 20px 35px -12px rgba(0, 0, 0, 0.1);
-            --font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+            --font-family: 'Segoe UI', Roboto, sans-serif;
             --base-font-size: 16px;
         }
-
-        /* Theme Dark */
         body.dark-mode {
             --bg-body: #1a1a1a;
             --bg-container: #2d2d2d;
@@ -38,33 +27,25 @@
             --card-bg: #3a3a3a;
             --card-border: #5a4a3a;
             --filter-bg: #2a2a2a;
-            --tag-bg: #3e3e3e;
             --btn-bg: #5e5a55;
             --btn-primary-bg: #c97e48;
-            --btn-primary-hover: #b06834;
-            --shadow-sm: 0 8px 20px rgba(0,0,0,0.3);
         }
-
         body {
             background: var(--bg-body);
             font-family: var(--font-family);
             font-size: var(--base-font-size);
             color: var(--text-primary);
             padding: 1rem;
-            transition: background 0.2s, color 0.2s;
+            transition: 0.2s;
         }
-
         .app-container {
             max-width: 1300px;
             margin: 0 auto;
             background: var(--bg-container);
             border-radius: 2rem;
-            box-shadow: var(--shadow-sm);
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.1);
             padding: 1.5rem 2rem 2rem;
-            transition: background 0.2s;
         }
-
-        /* Header & Badge */
         .top-bar {
             display: flex;
             flex-wrap: wrap;
@@ -72,10 +53,9 @@
             align-items: baseline;
             border-bottom: 2px solid var(--border-light);
             padding-bottom: 1rem;
-            margin-bottom: 1.8rem;
+            margin-bottom: 1.5rem;
             gap: 1rem;
         }
-
         .logo h1 {
             font-size: 1.7rem;
             background: linear-gradient(135deg, #b45a2a, #7e4019);
@@ -83,30 +63,6 @@
             -webkit-background-clip: text;
             color: transparent;
         }
-
-        body.dark-mode .logo h1 {
-            background: linear-gradient(135deg, #e6a068, #c2824a);
-            background-clip: text;
-            -webkit-background-clip: text;
-        }
-
-        .admin-badge {
-            background: #2d3e2b;
-            color: #e9f5e0;
-            padding: 0.2rem 1rem;
-            border-radius: 40px;
-            font-size: 0.7rem;
-            font-weight: bold;
-        }
-        .user-badge {
-            background: #ad8863;
-            color: white;
-            padding: 0.2rem 1rem;
-            border-radius: 40px;
-            font-size: 0.7rem;
-        }
-
-        /* Thanh công cụ đọc */
         .reading-tools {
             background: var(--filter-bg);
             border-radius: 60px;
@@ -117,78 +73,42 @@
             align-items: center;
             justify-content: space-between;
             gap: 1rem;
-            border: 1px solid var(--border-light);
         }
-        .tool-group {
-            display: flex;
-            gap: 0.8rem;
-            align-items: center;
-            flex-wrap: wrap;
-        }
+        .tool-group { display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap; }
         .tool-btn {
             background: var(--btn-bg);
             border: none;
             padding: 0.3rem 1rem;
             border-radius: 40px;
-            font-size: 0.8rem;
             cursor: pointer;
-            font-weight: 500;
             color: var(--text-primary);
-            transition: 0.1s;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
         }
-        .tool-btn-primary {
-            background: var(--btn-primary-bg);
-            color: white;
-        }
+        .tool-btn-primary { background: var(--btn-primary-bg); color: white; }
         .font-select {
             background: var(--card-bg);
             border: 1px solid var(--border-light);
             border-radius: 40px;
             padding: 0.3rem 0.8rem;
-            font-size: 0.8rem;
             color: var(--text-primary);
         }
-        .size-value {
-            font-weight: bold;
-            min-width: 45px;
-            display: inline-block;
-            text-align: center;
-        }
-
-        /* GitHub panel */
-        .github-panel {
+        .github-panel, .admin-section {
             background: var(--filter-bg);
             border-radius: 1.4rem;
             padding: 1.2rem 1.5rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             border: 1px solid var(--border-light);
         }
-        .config-row {
+        .config-row, .form-grid, .import-row {
             display: flex;
             flex-wrap: wrap;
             gap: 1rem;
-            align-items: flex-end;
             margin-top: 0.8rem;
+            align-items: flex-end;
         }
-        .config-field {
-            flex: 1;
-            min-width: 180px;
-        }
-        .config-field label {
-            font-size: 0.7rem;
-            font-weight: 600;
-            color: #9f7b55;
-            display: block;
-        }
-        body.dark-mode .config-field label {
-            color: #dbbc98;
-        }
-        .config-field input {
+        .config-field, .form-group { flex: 1; min-width: 150px; }
+        .config-field input, .form-group input, .form-group select {
             width: 100%;
-            padding: 0.6rem 0.9rem;
+            padding: 0.6rem;
             border-radius: 60px;
             border: 1px solid var(--border-light);
             background: var(--card-bg);
@@ -201,241 +121,105 @@
             border-radius: 60px;
             font-weight: 600;
             cursor: pointer;
-            transition: 0.2s;
             color: var(--text-primary);
         }
-        .btn-primary {
-            background: var(--btn-primary-bg);
-            color: white;
-        }
-        .btn-primary:hover {
-            background: var(--btn-primary-hover);
-        }
-        .sync-status {
-            font-size: 0.75rem;
-            margin-top: 0.6rem;
-        }
-
-        /* Admin add section */
-        .admin-section {
-            background: var(--filter-bg);
-            border-radius: 1.4rem;
-            padding: 1rem 1.5rem;
-            margin-bottom: 2rem;
-            border: 1px solid var(--border-light);
-        }
-        .form-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-top: 0.8rem;
-        }
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 0.6rem;
-            border-radius: 60px;
-            border: 1px solid var(--border-light);
-            background: var(--card-bg);
-            color: var(--text-primary);
-        }
-
-        /* filter */
+        .btn-primary { background: var(--btn-primary-bg); color: white; }
+        .btn-file { background: #6f9e6f; color: white; }
         .filter-bar {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
-            align-items: center;
             margin-bottom: 1.5rem;
             gap: 0.8rem;
         }
-        .status-filters {
-            display: flex;
-            gap: 0.6rem;
-            background: var(--filter-bg);
-            padding: 0.3rem 1rem;
-            border-radius: 60px;
-        }
-        .filter-chip {
-            padding: 0.3rem 1rem;
-            border-radius: 40px;
-            cursor: pointer;
-            font-size: 0.8rem;
-        }
-        .filter-chip.active {
-            background: var(--btn-primary-bg);
-            color: white;
-        }
+        .status-filters { display: flex; gap: 0.6rem; background: var(--filter-bg); padding: 0.3rem 1rem; border-radius: 60px; }
+        .filter-chip { padding: 0.3rem 1rem; border-radius: 40px; cursor: pointer; }
+        .filter-chip.active { background: var(--btn-primary-bg); color: white; }
         .search-box input {
             padding: 0.5rem 1rem;
             border-radius: 60px;
             border: 1px solid var(--border-light);
             background: var(--card-bg);
-            color: var(--text-primary);
             width: 220px;
         }
-
-        /* story grid */
-        .story-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-top: 1rem;
-        }
-        .story-card {
-            background: var(--card-bg);
-            border-radius: 1.3rem;
-            border: 1px solid var(--card-border);
-            padding: 1.2rem;
-            transition: 0.2s;
-        }
-        .story-name {
-            font-size: calc(var(--base-font-size) * 1.1);
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-        .chapter-row {
-            font-size: calc(var(--base-font-size) * 0.85);
-            background: var(--tag-bg);
-            display: inline-block;
-            padding: 0.2rem 0.8rem;
-            border-radius: 40px;
-            margin: 8px 0;
-        }
-        .genre-tag {
-            font-size: calc(var(--base-font-size) * 0.75);
-            color: #96663b;
-        }
-        body.dark-mode .genre-tag { color: #d8aa76; }
-        .icon-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: calc(var(--base-font-size) * 0.7);
-            padding: 4px 8px;
-            border-radius: 30px;
-            color: var(--text-primary);
-        }
-        .delete-btn { color: #b95c3a; }
-        .empty-msg {
-            text-align: center;
-            padding: 3rem;
-            color: #aa8b68;
-        }
-        footer {
-            margin-top: 2rem;
-            font-size: 0.7rem;
-            text-align: center;
-            opacity: 0.7;
-        }
-        @media (max-width: 600px) {
-            .app-container { padding: 1rem; }
-            .reading-tools { flex-direction: column; align-items: stretch; }
-        }
+        .story-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
+        .story-card { background: var(--card-bg); border-radius: 1.3rem; border: 1px solid var(--card-border); padding: 1.2rem; }
+        .story-name { font-size: calc(var(--base-font-size) * 1.1); font-weight: 700; }
+        .chapter-row { font-size: 0.85rem; background: var(--filter-bg); display: inline-block; padding: 0.2rem 0.8rem; border-radius: 40px; margin: 8px 0; }
+        .empty-msg { text-align: center; padding: 3rem; }
+        footer { margin-top: 2rem; text-align: center; font-size: 0.7rem; opacity: 0.7; }
+        input[type="file"] { display: none; }
     </style>
 </head>
 <body>
 <div class="app-container">
-    <div class="top-bar">
-        <div class="logo">
-            <h1>📖 Truyện Box · Đọc thoải mái</h1>
-            <div style="font-size:0.75rem;">Đồng bộ Gist + Tuỳ chỉnh giao diện</div>
-        </div>
-        <div id="modeBadge"></div>
-    </div>
+    <div class="top-bar"><div class="logo"><h1>📖 Truyện Box · Tải JSON/Word</h1><div>Đồng bộ Gist + Nhập file nhanh</div></div><div id="modeBadge"></div></div>
 
-    <!-- Thanh công cụ đọc: sáng/tối, font, cỡ chữ -->
+    <!-- Thanh công cụ đọc -->
     <div class="reading-tools">
-        <div class="tool-group">
-            <span>🎨 Giao diện:</span>
-            <button class="tool-btn" id="lightModeBtn">☀️ Sáng</button>
-            <button class="tool-btn" id="darkModeBtn">🌙 Tối</button>
+        <div class="tool-group"><span>🎨</span><button class="tool-btn" id="lightModeBtn">Sáng</button><button class="tool-btn" id="darkModeBtn">Tối</button></div>
+        <div class="tool-group"><span>🔤 Font:</span><select id="fontSelect" class="font-select"><option value="'Segoe UI', Roboto, sans-serif">Mặc định</option><option value="'Merriweather', Georgia, serif">Serif</option><option value="'Noto Sans', sans-serif">Noto Sans</option></select></div>
+        <div class="tool-group"><span>📏</span><button class="tool-btn" id="decreaseFontBtn">A-</button><span id="fontSizeValue">16px</span><button class="tool-btn" id="increaseFontBtn">A+</button><button class="tool-btn" id="resetFontBtn">Reset</button></div>
+    </div>
+
+    <!-- KHU VỰC TẢI FILE - RÕ RÀNG NHẤT -->
+    <div class="admin-section" style="background: #e8dccf;">
+        <strong>📂 NHẬP TRUYỆN TỪ FILE (JSON / WORD)</strong>
+        <div class="import-row" style="margin-top: 12px;">
+            <label class="btn btn-file" style="display: inline-block; cursor: pointer;">📁 Chọn file JSON <input type="file" id="uploadJsonFile" accept=".json"></label>
+            <label class="btn btn-file" style="display: inline-block; cursor: pointer; background: #8faa6e;">📄 Chọn file Word (.docx) <input type="file" id="uploadWordFile" accept=".docx"></label>
+            <button class="btn" id="downloadSampleJsonBtn">📥 Tải JSON mẫu</button>
         </div>
-        <div class="tool-group">
-            <span>🔤 Font chữ:</span>
-            <select id="fontSelect" class="font-select">
-                <option value="'Segoe UI', Roboto, sans-serif">Mặc định (Segoe)</option>
-                <option value="'Merriweather', Georgia, serif">Serif (Merriweather)</option>
-                <option value="'Noto Sans', sans-serif">Noto Sans</option>
-                <option value="'Consolas', 'Courier New', monospace">Monospace</option>
-                <option value="'Times New Roman', serif">Times New Roman</option>
-            </select>
+        <div style="font-size: 0.75rem; margin-top: 8px;">💡 File Word: mỗi dòng là một truyện (định dạng: "Tên truyện | Chương hiện tại | Thể loại" hoặc chỉ cần tên)</div>
+    </div>
+
+    <!-- GitHub Sync -->
+    <div id="githubConfigPanel" class="github-panel">
+        <strong>🔐 GitHub Gist Sync</strong>
+        <div class="config-row">
+            <div class="config-field"><label>GitHub Token (admin)</label><input type="password" id="githubToken" placeholder="ghp_..."></div>
+            <div class="config-field"><label>Gist ID</label><input type="text" id="gistId" placeholder="vd: abc123..."></div>
+            <button class="btn btn-primary" id="saveGistConfigBtn">💾 Lưu & Tải</button>
+            <button class="btn" id="pushToGistBtn">☁️ Đẩy lên Gist</button>
         </div>
-        <div class="tool-group">
-            <span>📏 Cỡ chữ:</span>
-            <button class="tool-btn" id="decreaseFontBtn">A-</button>
-            <span id="fontSizeValue" class="size-value">16px</span>
-            <button class="tool-btn" id="increaseFontBtn">A+</button>
-            <button class="tool-btn" id="resetFontBtn">Reset</button>
+        <div id="syncMessage" class="sync-status"></div>
+    </div>
+
+    <!-- Admin thêm thủ công -->
+    <div id="adminAddSection" class="admin-section">
+        <strong>✍️ Thêm thủ công (Admin)</strong>
+        <div class="form-grid">
+            <div class="form-group"><input type="text" id="storyName" placeholder="Tên truyện *"></div>
+            <div class="form-group"><input type="text" id="storyGenre" placeholder="Thể loại" value="Tiên hiệp"></div>
+            <div class="form-group"><input type="text" id="storyChapter" placeholder="Chương" value="Chương 1"></div>
+            <div class="form-group"><select id="storyStatus"><option value="reading">📖 Đang đọc</option><option value="want">⏳ Muốn đọc</option></select></div>
+            <div class="form-group"><input type="text" id="storyNote" placeholder="Ghi chú"></div>
+            <button class="btn btn-primary" id="addStoryBtn">+ Thêm</button>
         </div>
     </div>
 
-    <!-- Panel cấu hình GitHub -->
-    <div id="githubConfigPanel" style="display: none;">
-        <div class="github-panel">
-            <strong>🔐 GitHub Gist Sync</strong>
-            <div class="config-row">
-                <div class="config-field">
-                    <label>🔑 GitHub Token (cần quyền gist)</label>
-                    <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxx">
-                </div>
-                <div class="config-field">
-                    <label>📄 Gist ID (để đồng bộ)</label>
-                    <input type="text" id="gistId" placeholder="vd: abc123def456...">
-                </div>
-                <button class="btn btn-primary" id="saveGistConfigBtn">💾 Lưu & Tải dữ liệu</button>
-                <button class="btn" id="pushToGistBtn">☁️ Đẩy lên Gist (Admin)</button>
-            </div>
-            <div id="syncMessage" class="sync-status"></div>
-            <div class="sync-status">💡 Hướng dẫn: Tạo Gist riêng tư, lấy ID từ URL. Admin cần token để ghi.</div>
-        </div>
-    </div>
-
-    <!-- Form thêm truyện (admin) -->
-    <div id="adminAddSection" style="display: none;">
-        <div class="admin-section">
-            <strong>✍️ Thêm truyện mới (Admin)</strong>
-            <div class="form-grid">
-                <div class="form-group"><input type="text" id="storyName" placeholder="Tên truyện *"></div>
-                <div class="form-group"><input type="text" id="storyGenre" placeholder="Thể loại" value="Tiên hiệp"></div>
-                <div class="form-group"><input type="text" id="storyChapter" placeholder="Chương hiện tại" value="Chương 1"></div>
-                <div class="form-group">
-                    <select id="storyStatus">
-                        <option value="reading">📖 Đang đọc</option>
-                        <option value="want">⏳ Muốn đọc</option>
-                    </select>
-                </div>
-                <div class="form-group"><input type="text" id="storyNote" placeholder="Ghi chú"></div>
-                <button class="btn btn-primary" id="addStoryBtn">+ Thêm</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Bộ lọc và danh sách -->
+    <!-- Bộ lọc -->
     <div class="filter-bar">
-        <div class="status-filters">
-            <div class="filter-chip" data-filter="all">📚 Tất cả</div>
-            <div class="filter-chip" data-filter="reading">📖 Đang đọc</div>
-            <div class="filter-chip" data-filter="want">⏳ Muốn đọc</div>
-        </div>
+        <div class="status-filters"><div class="filter-chip active" data-filter="all">📚 Tất cả</div><div class="filter-chip" data-filter="reading">📖 Đang đọc</div><div class="filter-chip" data-filter="want">⏳ Muốn đọc</div></div>
         <div class="search-box"><input type="text" id="searchInput" placeholder="🔍 Tìm truyện..."></div>
     </div>
-
     <div id="storiesGrid" class="story-grid"></div>
-    <footer>⚡ Admin: thêm ?mode=admin | Tuỳ chỉnh giao diện cho mắt thoải mái. Dữ liệu đồng bộ qua Gist.</footer>
+    <footer>⚡ Admin mặc định (thêm ?mode=admin). Tải file JSON/Word để nhập hàng loạt.</footer>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/mammoth@1.4.2/mammoth.browser.min.js"></script>
 <script>
-    // ======================== DỮ LIỆU & GIST ========================
+    // --------------------- DỮ LIỆU ---------------------
     let stories = [];
     let currentFilter = "all";
     let searchQuery = "";
-
     let gistId = localStorage.getItem("truyenbox_gistId") || "";
     let githubToken = localStorage.getItem("truyenbox_token") || "";
-    const urlParams = new URLSearchParams(window.location.search);
-    const isAdmin = urlParams.get("mode") === "admin";
+    const isAdmin = true;  // mặc định là admin để dùng toàn bộ chức năng (có thể bật tắt bằng url)
+    // nếu muốn chế độ user thì thêm ?mode=user
+    const isUserMode = new URLSearchParams(window.location.search).get("mode") === "user";
 
-    // ======================== TUỲ CHỈNH GIAO DIỆN ========================
+    // --------------------- GIAO DIỆN ---------------------
     function applyFontAndTheme() {
         const savedTheme = localStorage.getItem("truyenbox_theme") || "light";
         const savedFont = localStorage.getItem("truyenbox_font") || "'Segoe UI', Roboto, sans-serif";
@@ -448,236 +232,147 @@
         const fontSelect = document.getElementById("fontSelect");
         if (fontSelect) fontSelect.value = savedFont;
     }
+    function setTheme(mode) { if (mode === "dark") { document.body.classList.add("dark-mode"); localStorage.setItem("truyenbox_theme", "dark"); } else { document.body.classList.remove("dark-mode"); localStorage.setItem("truyenbox_theme", "light"); } }
+    function setFont(fontFamily) { document.documentElement.style.setProperty('--font-family', fontFamily); localStorage.setItem("truyenbox_font", fontFamily); }
+    function setFontSize(delta) { let current = parseInt(localStorage.getItem("truyenbox_fontsize") || "16"); let newSize = Math.min(28, Math.max(12, current + delta)); localStorage.setItem("truyenbox_fontsize", newSize); document.documentElement.style.setProperty('--base-font-size', newSize + 'px'); document.getElementById("fontSizeValue").innerText = newSize + "px"; }
+    function resetFont() { localStorage.setItem("truyenbox_fontsize", "16"); localStorage.setItem("truyenbox_font", "'Segoe UI', Roboto, sans-serif"); localStorage.setItem("truyenbox_theme", "light"); applyFontAndTheme(); document.body.classList.remove("dark-mode"); }
 
-    function setTheme(mode) {
-        if (mode === "dark") {
-            document.body.classList.add("dark-mode");
-            localStorage.setItem("truyenbox_theme", "dark");
-        } else {
-            document.body.classList.remove("dark-mode");
-            localStorage.setItem("truyenbox_theme", "light");
-        }
-    }
-
-    function setFont(fontFamily) {
-        document.documentElement.style.setProperty('--font-family', fontFamily);
-        localStorage.setItem("truyenbox_font", fontFamily);
-    }
-
-    function setFontSize(delta) {
-        let current = parseInt(localStorage.getItem("truyenbox_fontsize") || "16");
-        let newSize = current + delta;
-        if (newSize < 12) newSize = 12;
-        if (newSize > 28) newSize = 28;
-        localStorage.setItem("truyenbox_fontsize", newSize);
-        document.documentElement.style.setProperty('--base-font-size', newSize + 'px');
-        document.getElementById("fontSizeValue").innerText = newSize + "px";
-    }
-
-    function resetFont() {
-        localStorage.setItem("truyenbox_fontsize", "16");
-        localStorage.setItem("truyenbox_font", "'Segoe UI', Roboto, sans-serif");
-        localStorage.setItem("truyenbox_theme", "light");
-        applyFontAndTheme();
-        const fontSelect = document.getElementById("fontSelect");
-        if (fontSelect) fontSelect.value = "'Segoe UI', Roboto, sans-serif";
-        document.body.classList.remove("dark-mode");
-    }
-
-    // ======================== GIST + STORIES LOGIC ========================
-    function updateModeUI() {
-        const modeBadge = document.getElementById("modeBadge");
-        const githubPanel = document.getElementById("githubConfigPanel");
-        const adminAddSection = document.getElementById("adminAddSection");
-        if (isAdmin) {
-            modeBadge.innerHTML = '<span class="admin-badge">👑 Chế độ Admin · Quản lý & Sync</span>';
-            if (githubPanel) githubPanel.style.display = "block";
-            if (adminAddSection) adminAddSection.style.display = "block";
-        } else {
-            modeBadge.innerHTML = '<span class="user-badge">👤 Người dùng · Chỉ xem (có thể nhập Gist ID)</span>';
-            if (githubPanel) githubPanel.style.display = "block";
-            if (adminAddSection) adminAddSection.style.display = "none";
-        }
-        if (!isAdmin) {
-            const pushBtn = document.getElementById("pushToGistBtn");
-            if (pushBtn) pushBtn.style.display = "none";
-        } else {
-            const pushBtn = document.getElementById("pushToGistBtn");
-            if (pushBtn) pushBtn.style.display = "inline-block";
-        }
-    }
-
-    function persistLocalCopy() {
-        localStorage.setItem("truyenbox_local_backup", JSON.stringify(stories));
-    }
-
-    function getDefaultStories() {
-        return [
-            { id: "1", name: "Ta ở tu tiên giới làm nội cuốn", genre: "Tiên hiệp", currentChapter: "Chương 390: ta có thể trước mua một viên thử xem sao", status: "reading", note: "Hot! theo dõi hàng tuần", createdAt: Date.now() },
-            { id: "2", name: "Đại Phụng Đả Canh Nhân", genre: "Huyền huyễn", currentChapter: "Chương 245: Kỳ án", status: "reading", note: "Hài hước, hấp dẫn", createdAt: Date.now() },
-            { id: "3", name: "Vô Thượng Tông Sư", genre: "Võng du", currentChapter: "Chương 88", status: "want", note: "Đề cử", createdAt: Date.now() }
-        ];
-    }
-
-    async function loadFromGist() {
-        if (!gistId) {
-            if(stories.length === 0) stories = getDefaultStories();
-            return;
-        }
-        const url = `https://api.github.com/gists/${gistId}`;
-        const headers = {};
-        if (githubToken && isAdmin) headers["Authorization"] = `token ${githubToken}`;
-        try {
-            const res = await fetch(url, { headers });
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
-            const gistData = await res.json();
-            const files = gistData.files;
-            let storyFile = null;
-            for (let key in files) {
-                if (key.endsWith(".json")) { storyFile = files[key]; break; }
-            }
-            if (!storyFile) throw new Error("Không tìm thấy file .json trong Gist");
-            const parsed = JSON.parse(storyFile.content);
-            if (Array.isArray(parsed)) {
-                stories = parsed.map(s => ({ ...s, id: s.id || `story_${Date.now()}_${Math.random()}`, createdAt: s.createdAt || Date.now() }));
-            } else throw new Error("Dữ liệu không phải mảng");
-        } catch (err) {
-            console.warn(err);
-            if(stories.length === 0) stories = getDefaultStories();
-            throw err;
-        }
-        persistLocalCopy();
-    }
-
-    async function pushToGist() {
-        if (!isAdmin) { alert("Chỉ admin mới đẩy được"); return; }
-        if (!gistId) { alert("Cần Gist ID"); return; }
-        if (!githubToken) { alert("Admin cần token để ghi lên Gist"); return; }
-        const filename = "truyenbox_data.json";
-        const content = JSON.stringify(stories, null, 2);
-        const url = `https://api.github.com/gists/${gistId}`;
-        try {
-            const res = await fetch(url, {
-                method: "PATCH",
-                headers: { "Authorization": `token ${githubToken}`, "Content-Type": "application/json" },
-                body: JSON.stringify({ files: { [filename]: { content: content } } })
-            });
-            if (!res.ok) throw new Error(`Lỗi ${res.status}`);
-            document.getElementById("syncMessage").innerHTML = "✨ Đã đẩy lên Gist thành công!";
-            alert("Đồng bộ thành công!");
-        } catch (err) {
-            document.getElementById("syncMessage").innerHTML = "❌ Push thất bại: " + err.message;
-            alert("Lỗi: " + err.message);
-        }
-    }
-
-    function saveGistSettings() {
-        const newGistId = document.getElementById("gistId").value.trim();
-        const newToken = document.getElementById("githubToken").value.trim();
-        if (newGistId) { gistId = newGistId; localStorage.setItem("truyenbox_gistId", gistId); }
-        if (isAdmin && newToken) { githubToken = newToken; localStorage.setItem("truyenbox_token", githubToken); }
-        document.getElementById("syncMessage").innerHTML = "⚙️ Đang tải dữ liệu từ Gist...";
-        loadFromGist().then(() => {
-            document.getElementById("syncMessage").innerHTML = "✅ Đồng bộ thành công!";
-            renderStories();
-        }).catch(err => { document.getElementById("syncMessage").innerHTML = "❌ Lỗi: " + err.message; });
-    }
-
-    function addStory() {
-        if (!isAdmin) { alert("Chỉ admin mới thêm"); return; }
-        const name = document.getElementById("storyName").value.trim();
-        if (!name) { alert("Nhập tên truyện"); return; }
-        const genre = document.getElementById("storyGenre").value.trim() || "Chưa phân loại";
-        const currentChapter = document.getElementById("storyChapter").value.trim() || "Chương 1";
-        const status = document.getElementById("storyStatus").value;
-        const note = document.getElementById("storyNote").value.trim();
-        const newStory = { id: "id_" + Date.now() + "_" + Math.random().toString(36).substr(2, 6), name, genre, currentChapter, status, note, createdAt: Date.now() };
-        stories.unshift(newStory);
-        persistLocalCopy();
-        renderStories();
-        document.getElementById("storyName").value = "";
-        document.getElementById("storyNote").value = "";
-        if (isAdmin) showSyncHint();
-    }
-
-    function deleteStoryById(id) {
-        if (!isAdmin) { alert("Chỉ admin xóa được"); return; }
-        if (confirm("Xóa truyện?")) { stories = stories.filter(s => s.id !== id); persistLocalCopy(); renderStories(); showSyncHint(); }
-    }
-    function updateChapter(id, newChapter) { if (!isAdmin) return; const story = stories.find(s => s.id === id); if (story) { story.currentChapter = newChapter; persistLocalCopy(); renderStories(); showSyncHint(); } }
-    function toggleStatus(id) { if (!isAdmin) return; const story = stories.find(s => s.id === id); if (story) { story.status = story.status === "reading" ? "want" : "reading"; persistLocalCopy(); renderStories(); showSyncHint(); } }
-    function showSyncHint() { const msgDiv = document.getElementById("syncMessage"); if (msgDiv && isAdmin) msgDiv.innerHTML = "📤 Dữ liệu thay đổi. Nhấn 'Đẩy lên Gist' để đồng bộ."; }
-
-    function getFiltered() {
-        let result = [...stories];
-        if (currentFilter !== "all") result = result.filter(s => s.status === currentFilter);
-        if (searchQuery.trim()) { const kw = searchQuery.trim().toLowerCase(); result = result.filter(s => s.name.toLowerCase().includes(kw)); }
-        result.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
-        return result;
-    }
-
+    // --------------------- XỬ LÝ STORIES ---------------------
+    function persistLocalCopy() { localStorage.setItem("truyenbox_local_backup", JSON.stringify(stories)); }
+    function getDefaultStories() { return [ { id: "1", name: "Ta ở tu tiên giới làm nội cuốn", genre: "Tiên hiệp", currentChapter: "Chương 390: mua một viên thử", status: "reading", note: "Hot", createdAt: Date.now() } ]; }
     function renderStories() {
         const container = document.getElementById("storiesGrid");
-        const filtered = getFiltered();
+        let filtered = stories.filter(s => currentFilter === "all" ? true : s.status === currentFilter);
+        if (searchQuery.trim()) filtered = filtered.filter(s => s.name.toLowerCase().includes(searchQuery.toLowerCase()));
+        filtered.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
         if (!container) return;
-        if (filtered.length === 0) { container.innerHTML = `<div class="empty-msg">📭 Chưa có truyện. Admin thêm hoặc tải Gist.</div>`; return; }
+        if (filtered.length === 0) { container.innerHTML = `<div class="empty-msg">📭 Chưa có truyện. Hãy tải file JSON/Word lên!</div>`; return; }
         container.innerHTML = "";
         filtered.forEach(story => {
             const card = document.createElement("div"); card.className = "story-card";
-            const statusLabel = story.status === "reading" ? "📖 Đang đọc" : "⏳ Muốn đọc";
-            card.innerHTML = `<div class="story-name">${escapeHtml(story.name)}</div>
-                <div class="chapter-row">📑 ${escapeHtml(story.currentChapter)}</div>
-                <div class="genre-tag">🏷️ ${escapeHtml(story.genre)}</div>
-                <div style="font-size:0.9rem; margin: 8px 0;">📝 ${escapeHtml(story.note || "Không có ghi chú")}</div>
-                <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem;">
-                    <span>${statusLabel}</span>
-                    ${isAdmin ? `<div style="display:flex; gap:6px;">
-                        <button class="icon-btn" data-update-chapter="${story.id}" style="background:#e8ddcf;">✏️ Sửa chương</button>
-                        <button class="icon-btn" data-toggle-status="${story.id}">🔄 Đổi trạng thái</button>
-                        <button class="icon-btn delete-btn" data-delete="${story.id}">🗑️ Xóa</button>
-                    </div>` : `<div style="font-size:0.65rem;">🔒 Chỉ xem</div>`}
-                </div>
-                ${isAdmin ? `<div id="edit-area-${story.id}" style="margin-top:8px; display:none;">
-                    <input type="text" id="chapterInput-${story.id}" value="${escapeHtml(story.currentChapter)}" style="width:70%; padding:4px; border-radius:30px; border:1px solid #dac29c;">
-                    <button class="icon-btn" data-save-chapter="${story.id}">💾 Lưu</button>
-                    <button class="icon-btn" data-cancel-edit="${story.id}">Hủy</button>
-                </div>` : ""}`;
+            card.innerHTML = `<div class="story-name">${escapeHtml(story.name)}</div><div class="chapter-row">📑 ${escapeHtml(story.currentChapter)}</div><div>🏷️ ${escapeHtml(story.genre)}</div><div style="margin:8px 0;">📝 ${escapeHtml(story.note || "")}</div>
+            <div style="display:flex; justify-content:space-between;"><span>${story.status === "reading" ? "📖 Đang đọc" : "⏳ Muốn đọc"}</span>
+            ${!isUserMode ? `<div><button class="icon-btn" data-update-chapter="${story.id}" style="background:#e0cfbc;">✏️ Sửa chương</button>
+            <button class="icon-btn" data-toggle-status="${story.id}">🔄 Đổi</button>
+            <button class="icon-btn delete-btn" data-delete="${story.id}">🗑️ Xóa</button></div>` : `<span style="font-size:0.7rem;">🔒 Chỉ xem</span>`}</div>
+            ${!isUserMode ? `<div id="edit-area-${story.id}" style="display:none; margin-top:8px;"><input id="chapterInput-${story.id}" value="${escapeHtml(story.currentChapter)}" style="width:70%;padding:4px;"><button data-save-chapter="${story.id}">💾 Lưu</button><button data-cancel-edit="${story.id}">Hủy</button></div>` : ""}`;
             container.appendChild(card);
         });
-        if (isAdmin) {
-            document.querySelectorAll("[data-update-chapter]").forEach(btn => btn.addEventListener("click", (e) => { const id = btn.getAttribute("data-update-chapter"); const area = document.getElementById(`edit-area-${id}`); if(area) area.style.display = "flex"; }));
-            document.querySelectorAll("[data-save-chapter]").forEach(btn => btn.addEventListener("click", (e) => { const id = btn.getAttribute("data-save-chapter"); const input = document.getElementById(`chapterInput-${id}`); if(input){ updateChapter(id, input.value); const area = document.getElementById(`edit-area-${id}`); if(area) area.style.display = "none"; } }));
-            document.querySelectorAll("[data-cancel-edit]").forEach(btn => btn.addEventListener("click", (e) => { const id = btn.getAttribute("data-cancel-edit"); const area = document.getElementById(`edit-area-${id}`); if(area) area.style.display = "none"; }));
-            document.querySelectorAll("[data-toggle-status]").forEach(btn => btn.addEventListener("click", (e) => { const id = btn.getAttribute("data-toggle-status"); toggleStatus(id); }));
-            document.querySelectorAll("[data-delete]").forEach(btn => btn.addEventListener("click", (e) => { const id = btn.getAttribute("data-delete"); deleteStoryById(id); }));
+        if (!isUserMode) {
+            document.querySelectorAll("[data-update-chapter]").forEach(btn => btn.onclick = () => { const id = btn.getAttribute("data-update-chapter"); const area = document.getElementById(`edit-area-${id}`); if(area) area.style.display = "flex"; } );
+            document.querySelectorAll("[data-save-chapter]").forEach(btn => btn.onclick = () => { const id = btn.getAttribute("data-save-chapter"); const input = document.getElementById(`chapterInput-${id}`); if(input){ updateChapter(id, input.value); document.getElementById(`edit-area-${id}`).style.display = "none"; } } );
+            document.querySelectorAll("[data-cancel-edit]").forEach(btn => btn.onclick = () => { const id = btn.getAttribute("data-cancel-edit"); const area = document.getElementById(`edit-area-${id}`); if(area) area.style.display = "none"; } );
+            document.querySelectorAll("[data-toggle-status]").forEach(btn => btn.onclick = () => toggleStatus(btn.getAttribute("data-toggle-status")) );
+            document.querySelectorAll("[data-delete]").forEach(btn => btn.onclick = () => deleteStoryById(btn.getAttribute("data-delete")) );
         }
     }
+    function updateChapter(id, newChapter) { const s = stories.find(s => s.id === id); if(s){ s.currentChapter = newChapter; persistLocalCopy(); renderStories(); showSyncHint(); } }
+    function toggleStatus(id) { const s = stories.find(s => s.id === id); if(s){ s.status = s.status === "reading" ? "want" : "reading"; persistLocalCopy(); renderStories(); showSyncHint(); } }
+    function deleteStoryById(id) { if(confirm("Xóa?")){ stories = stories.filter(s => s.id !== id); persistLocalCopy(); renderStories(); showSyncHint(); } }
+    function addStoryManually() {
+        const name = document.getElementById("storyName").value.trim();
+        if(!name){ alert("Nhập tên truyện"); return; }
+        const newStory = { id: "id_"+Date.now()+"_"+Math.random(), name: name, genre: document.getElementById("storyGenre").value.trim()||"Chưa phân loại", currentChapter: document.getElementById("storyChapter").value.trim()||"Chương 1", status: document.getElementById("storyStatus").value, note: document.getElementById("storyNote").value.trim(), createdAt: Date.now() };
+        stories.unshift(newStory); persistLocalCopy(); renderStories(); document.getElementById("storyName").value = ""; document.getElementById("storyNote").value = ""; showSyncHint();
+    }
+    function showSyncHint() { const msg = document.getElementById("syncMessage"); if(msg && !isUserMode) msg.innerHTML = "📤 Dữ liệu thay đổi. Nhấn 'Đẩy lên Gist' để đồng bộ."; }
 
-    function escapeHtml(str) { if(!str) return ""; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
-    function bindFilters() {
-        document.querySelectorAll(".filter-chip").forEach(chip => chip.addEventListener("click", () => { const f = chip.getAttribute("data-filter"); currentFilter = f; document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active")); chip.classList.add("active"); renderStories(); }));
-        document.getElementById("searchInput")?.addEventListener("input", (e) => { searchQuery = e.target.value; renderStories(); });
+    // --------------------- NHẬP JSON ---------------------
+    function importFromJson(jsonArray) {
+        if(!Array.isArray(jsonArray)) throw new Error("Cần mảng JSON");
+        let added=0;
+        for(let item of jsonArray){
+            if(item.name && typeof item.name === "string"){
+                stories.unshift({ id: "imp_"+Date.now()+"_"+Math.random(), name: item.name, genre: item.genre || "Chưa phân loại", currentChapter: item.currentChapter || "Chương 1", status: (item.status==="reading"||item.status==="want")?item.status:"want", note: item.note || "", createdAt: Date.now() });
+                added++;
+            }
+        }
+        if(added===0) throw new Error("Không có truyện hợp lệ (cần trường name)");
+        persistLocalCopy(); renderStories(); alert(`Đã thêm ${added} truyện!`);
+    }
+    // --------------------- NHẬP WORD (dùng mammoth) ---------------------
+    async function importFromWord(file) {
+        try {
+            const arrayBuffer = await file.arrayBuffer();
+            const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
+            const text = result.value;
+            const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
+            let added=0;
+            for(let line of lines){
+                let parts = line.split(/[|,，、]/).map(p=>p.trim());
+                let name = parts[0];
+                if(!name) continue;
+                let chapter = parts[1] || "Chương 1";
+                let genre = parts[2] || "Truyện chữ";
+                stories.unshift({ id: "word_"+Date.now()+"_"+Math.random(), name: name, genre: genre, currentChapter: chapter, status: "want", note: "Nhập từ Word", createdAt: Date.now() });
+                added++;
+            }
+            if(added===0) throw new Error("Không tìm thấy dòng nào");
+            persistLocalCopy(); renderStories(); alert(`Đã thêm ${added} truyện từ Word!`);
+        } catch(err){ alert("Lỗi đọc Word: "+err.message); }
     }
 
-    async function init() {
+    // --------------------- GIST SYNC ---------------------
+    async function loadFromGist() {
+        if(!gistId) return;
+        const url = `https://api.github.com/gists/${gistId}`;
+        const headers = {};
+        if(githubToken && !isUserMode) headers["Authorization"] = `token ${githubToken}`;
+        try {
+            const res = await fetch(url, { headers });
+            if(!res.ok) throw new Error(`HTTP ${res.status}`);
+            const data = await res.json();
+            let content = null;
+            for(let f in data.files) if(f.endsWith(".json")) { content = data.files[f].content; break; }
+            if(!content) throw new Error("Không có file .json");
+            const parsed = JSON.parse(content);
+            if(Array.isArray(parsed)){ stories = parsed.map(s=>({...s, id:s.id||"g_"+Math.random()})); persistLocalCopy(); renderStories(); }
+        } catch(err){ console.warn(err); if(stories.length===0) stories = getDefaultStories(); persistLocalCopy(); renderStories(); }
+    }
+    async function pushToGist() {
+        if(isUserMode){ alert("Chế độ user không đẩy được"); return; }
+        if(!gistId){ alert("Nhập Gist ID"); return; }
+        if(!githubToken){ alert("Cần GitHub Token để ghi"); return; }
+        const filename = "truyenbox_data.json";
+        const content = JSON.stringify(stories.map(s=>({name:s.name, currentChapter:s.currentChapter, genre:s.genre, status:s.status, note:s.note})), null, 2);
+        try {
+            const res = await fetch(`https://api.github.com/gists/${gistId}`, { method: "PATCH", headers: { "Authorization": `token ${githubToken}`, "Content-Type": "application/json" }, body: JSON.stringify({ files: { [filename]: { content } } }) });
+            if(!res.ok) throw new Error(`Lỗi ${res.status}`);
+            document.getElementById("syncMessage").innerHTML = "✨ Đã đồng bộ lên Gist!";
+            alert("Đẩy lên Gist thành công!");
+        } catch(err){ alert("Lỗi: "+err.message); }
+    }
+    function saveGistSettings(){ const newId = document.getElementById("gistId").value.trim(); if(newId){ gistId=newId; localStorage.setItem("truyenbox_gistId",gistId); } const newToken = document.getElementById("githubToken").value.trim(); if(newToken && !isUserMode){ githubToken=newToken; localStorage.setItem("truyenbox_token",githubToken); } loadFromGist().then(()=>{ document.getElementById("syncMessage").innerHTML="✅ Tải Gist thành công"; }).catch(e=>{ document.getElementById("syncMessage").innerHTML="❌ Lỗi: "+e.message; }); }
+
+    // --------------------- KHỞI TẠO ---------------------
+    function init(){
+        if(isUserMode){
+            document.getElementById("adminAddSection").style.display = "none";
+            document.getElementById("modeBadge").innerHTML = '<span class="user-badge">👤 Người dùng</span>';
+        } else {
+            document.getElementById("modeBadge").innerHTML = '<span class="admin-badge">👑 Admin</span>';
+        }
         applyFontAndTheme();
-        updateModeUI();
-        bindFilters();
-        if (document.getElementById("gistId")) document.getElementById("gistId").value = gistId;
-        if (document.getElementById("githubToken") && isAdmin) document.getElementById("githubToken").value = githubToken;
-        document.getElementById("saveGistConfigBtn")?.addEventListener("click", saveGistSettings);
-        document.getElementById("pushToGistBtn")?.addEventListener("click", pushToGist);
-        document.getElementById("addStoryBtn")?.addEventListener("click", addStory);
-        // Các nút giao diện
-        document.getElementById("lightModeBtn")?.addEventListener("click", () => setTheme("light"));
-        document.getElementById("darkModeBtn")?.addEventListener("click", () => setTheme("dark"));
-        document.getElementById("fontSelect")?.addEventListener("change", (e) => setFont(e.target.value));
-        document.getElementById("increaseFontBtn")?.addEventListener("click", () => setFontSize(1));
-        document.getElementById("decreaseFontBtn")?.addEventListener("click", () => setFontSize(-1));
-        document.getElementById("resetFontBtn")?.addEventListener("click", resetFont);
-        try { if (gistId) await loadFromGist(); else { if(stories.length===0) stories = getDefaultStories(); persistLocalCopy(); } } catch(e) { console.warn(e); if(stories.length===0) stories = getDefaultStories(); }
-        renderStories();
+        document.getElementById("lightModeBtn")?.addEventListener("click",()=>setTheme("light"));
+        document.getElementById("darkModeBtn")?.addEventListener("click",()=>setTheme("dark"));
+        document.getElementById("fontSelect")?.addEventListener("change",e=>setFont(e.target.value));
+        document.getElementById("increaseFontBtn")?.addEventListener("click",()=>setFontSize(1));
+        document.getElementById("decreaseFontBtn")?.addEventListener("click",()=>setFontSize(-1));
+        document.getElementById("resetFontBtn")?.addEventListener("click",resetFont);
+        document.getElementById("saveGistConfigBtn")?.addEventListener("click",saveGistSettings);
+        document.getElementById("pushToGistBtn")?.addEventListener("click",pushToGist);
+        document.getElementById("addStoryBtn")?.addEventListener("click",addStoryManually);
+        document.getElementById("downloadSampleJsonBtn")?.addEventListener("click",()=>{ const sample = [{name:"Truyện mẫu 1", currentChapter:"Chương 5", genre:"Tiên hiệp", status:"reading", note:"Rất hay"}]; const blob=new Blob([JSON.stringify(sample,null,2)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="mau_truyen.json"; a.click(); URL.revokeObjectURL(blob); });
+        document.getElementById("uploadJsonFile")?.addEventListener("change",async(e)=>{ const file=e.target.files[0]; if(!file) return; const text=await file.text(); try{ const data=JSON.parse(text); importFromJson(data); }catch(err){ alert("JSON lỗi: "+err.message); } e.target.value=""; });
+        document.getElementById("uploadWordFile")?.addEventListener("change",async(e)=>{ const file=e.target.files[0]; if(file) await importFromWord(file); e.target.value=""; });
+        document.querySelectorAll(".filter-chip").forEach(chip=>chip.addEventListener("click",()=>{ currentFilter=chip.getAttribute("data-filter"); document.querySelectorAll(".filter-chip").forEach(c=>c.classList.remove("active")); chip.classList.add("active"); renderStories(); }));
+        document.getElementById("searchInput")?.addEventListener("input",e=>{ searchQuery=e.target.value; renderStories(); });
+        if(localStorage.getItem("truyenbox_local_backup")){ const backup=localStorage.getItem("truyenbox_local_backup"); try{ const parsed=JSON.parse(backup); if(Array.isArray(parsed) && parsed.length) stories=parsed; }catch(e){} }
+        if(stories.length===0) stories=getDefaultStories();
+        persistLocalCopy(); renderStories();
+        if(gistId) loadFromGist();
     }
+    function escapeHtml(str){ if(!str) return ""; return str.replace(/[&<>]/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
     init();
 </script>
 </body>
