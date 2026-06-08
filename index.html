@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>📚 Truyện Box | Import Word đúng cách</title>
+    <title>📚 Truyện Box | Đọc truyện offline</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
@@ -34,124 +34,181 @@
         .app-container { max-width: 1300px; margin: 0 auto; background: var(--bg-container); border-radius: 2rem; box-shadow: 0 20px 35px -12px rgba(0,0,0,0.1); padding: 1.5rem 2rem 2rem; }
         .top-bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; border-bottom: 2px solid var(--border-light); padding-bottom: 1rem; margin-bottom: 1.5rem; gap: 1rem; }
         .logo h1 { font-size: 1.7rem; background: linear-gradient(135deg, #b45a2a, #7e4019); background-clip: text; -webkit-background-clip: text; color: transparent; }
+        .admin-badge { background: #2d3e2b; color: #e9f5e0; padding: 0.2rem 1rem; border-radius: 40px; font-size: 0.7rem; font-weight: bold; }
+        .user-badge { background: #ad8863; color: white; padding: 0.2rem 1rem; border-radius: 40px; font-size: 0.7rem; }
+        
+        /* Thanh công cụ đọc - hiển thị cho cả user và admin */
         .reading-tools { background: var(--filter-bg); border-radius: 60px; padding: 0.5rem 1.2rem; margin-bottom: 1.5rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; }
         .tool-group { display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap; }
-        .tool-btn, .btn { background: var(--btn-bg); border: none; padding: 0.3rem 1rem; border-radius: 40px; cursor: pointer; color: var(--text-primary); font-weight: 500; }
+        .tool-btn, .btn { background: var(--btn-bg); border: none; padding: 0.3rem 1rem; border-radius: 40px; cursor: pointer; color: var(--text-primary); font-weight: 500; transition: 0.1s; }
         .tool-btn-primary, .btn-primary { background: var(--btn-primary-bg); color: white; }
         .btn-danger { background: #b1624b; color: white; }
-        .btn-warning { background: #d99938; color: white; }
         .font-select { background: var(--card-bg); border: 1px solid var(--border-light); border-radius: 40px; padding: 0.3rem 0.8rem; color: var(--text-primary); }
+        
+        /* Admin panels - ẩn với user */
+        .admin-only { display: none; }
+        
+        /* Các thành phần chung */
         .github-panel, .admin-section, .file-manager { background: var(--filter-bg); border-radius: 1.4rem; padding: 1.2rem 1.5rem; margin-bottom: 1.5rem; border: 1px solid var(--border-light); }
         .config-row, .form-grid, .import-row { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 0.8rem; align-items: flex-end; }
         .config-field, .form-group { flex: 1; min-width: 150px; }
         .config-field input, .form-group input, .form-group select { width: 100%; padding: 0.6rem; border-radius: 60px; border: 1px solid var(--border-light); background: var(--card-bg); color: var(--text-primary); }
         .file-item { background: var(--card-bg); padding: 0.5rem 1rem; border-radius: 60px; display: flex; align-items: center; justify-content: space-between; gap: 1rem; border: 1px solid var(--border-light); margin-bottom: 0.5rem; }
         .delete-file-btn { background: #b1624b; color: white; border: none; padding: 0.2rem 0.8rem; border-radius: 30px; cursor: pointer; font-size: 0.7rem; }
+        
+        /* Bộ lọc và danh sách truyện */
         .filter-bar { display: flex; flex-wrap: wrap; justify-content: space-between; margin-bottom: 1.5rem; gap: 0.8rem; }
         .status-filters { display: flex; gap: 0.6rem; background: var(--filter-bg); padding: 0.3rem 1rem; border-radius: 60px; }
         .filter-chip { padding: 0.3rem 1rem; border-radius: 40px; cursor: pointer; }
         .filter-chip.active { background: var(--btn-primary-bg); color: white; }
         .search-box input { padding: 0.5rem 1rem; border-radius: 60px; border: 1px solid var(--border-light); background: var(--card-bg); width: 220px; color: var(--text-primary); }
+        
+        /* Card truyện */
         .story-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
-        .story-card { background: var(--card-bg); border-radius: 1.3rem; border: 1px solid var(--card-border); padding: 1.2rem; }
-        .story-name { font-size: calc(var(--base-font-size) * 1.1); font-weight: 700; }
+        .story-card { background: var(--card-bg); border-radius: 1.3rem; border: 1px solid var(--card-border); padding: 1.2rem; transition: 0.2s; }
+        .story-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+        .story-name { font-size: calc(var(--base-font-size) * 1.1); font-weight: 700; margin-bottom: 6px; }
         .chapter-row { font-size: 0.85rem; background: var(--filter-bg); display: inline-block; padding: 0.2rem 0.8rem; border-radius: 40px; margin: 8px 0; }
+        .genre-tag { font-size: 0.75rem; color: #96663b; display: inline-block; margin-right: 8px; }
+        body.dark-mode .genre-tag { color: #d8aa76; }
         .story-content { font-size: 0.9rem; line-height: 1.5; max-height: 200px; overflow-y: auto; background: var(--filter-bg); padding: 0.8rem; border-radius: 1rem; margin: 8px 0; white-space: pre-wrap; }
-        .empty-msg { text-align: center; padding: 3rem; }
-        footer { margin-top: 2rem; text-align: center; font-size: 0.7rem; opacity: 0.7; }
+        .empty-msg { text-align: center; padding: 3rem; opacity: 0.7; }
+        footer { margin-top: 2rem; text-align: center; font-size: 0.7rem; opacity: 0.6; }
         input[type="file"] { display: none; }
-        .icon-btn { background: none; border: none; cursor: pointer; padding: 4px 8px; border-radius: 30px; }
+        .icon-btn { background: none; border: none; cursor: pointer; padding: 4px 8px; border-radius: 30px; color: var(--text-primary); }
         .delete-btn { color: #b95c3a; }
-        hr { margin: 0.5rem 0; border-color: var(--border-light); }
+        .status-badge { font-size: 0.7rem; padding: 2px 10px; border-radius: 20px; background: var(--filter-bg); }
     </style>
 </head>
 <body>
 <div class="app-container">
-    <div class="top-bar"><div class="logo"><h1>📖 Truyện Box · Import Word đúng cách</h1><div>Toàn bộ file Word thành 1 truyện (lưu nội dung)</div></div><div id="modeBadge"></div></div>
+    <div class="top-bar">
+        <div class="logo">
+            <h1>📖 Truyện Box</h1>
+            <div style="font-size:0.75rem;">Đọc truyện mọi lúc mọi nơi</div>
+        </div>
+        <div id="modeBadge"></div>
+    </div>
 
+    <!-- Thanh công cụ đọc - hiển thị cho tất cả -->
     <div class="reading-tools">
-        <div class="tool-group"><button class="tool-btn" id="lightModeBtn">☀️ Sáng</button><button class="tool-btn" id="darkModeBtn">🌙 Tối</button></div>
-        <div class="tool-group"><span>🔤 Font:</span><select id="fontSelect" class="font-select"><option value="'Segoe UI', Roboto, sans-serif">Mặc định</option><option value="'Merriweather', Georgia, serif">Serif</option><option value="'Noto Sans', sans-serif">Noto Sans</option></select></div>
-        <div class="tool-group"><button class="tool-btn" id="decreaseFontBtn">A-</button><span id="fontSizeValue">16px</span><button class="tool-btn" id="increaseFontBtn">A+</button><button class="tool-btn" id="resetFontBtn">Reset</button></div>
-    </div>
-
-    <!-- KHU VỰC TẢI FILE -->
-    <div class="admin-section">
-        <strong>📂 NHẬP TRUYỆN TỪ FILE</strong>
-        <div class="import-row">
-            <label class="btn btn-primary" style="cursor: pointer;">📁 JSON (nhiều truyện) <input type="file" id="uploadJsonFile" accept=".json"></label>
-            <label class="btn btn-primary" style="cursor: pointer; background: #8faa6e;">📄 Word (.docx) - thành 1 truyện <input type="file" id="uploadWordFile" accept=".docx"></label>
-            <button class="btn" id="downloadSampleJsonBtn">📥 Tải JSON mẫu</button>
+        <div class="tool-group">
+            <button class="tool-btn" id="lightModeBtn">☀️ Sáng</button>
+            <button class="tool-btn" id="darkModeBtn">🌙 Tối</button>
         </div>
-        <div style="font-size: 0.75rem; margin-top: 8px;">💡 Word: toàn bộ nội dung file sẽ thành 1 truyện duy nhất (tên file là tên truyện, nội dung nằm trong phần ghi chú)</div>
-    </div>
-
-    <!-- QUẢN LÝ FILE ĐÃ TẢI -->
-    <div class="file-manager">
-        <strong>🗂️ LỊCH SỬ FILE ĐÃ TẢI</strong>
-        <div id="fileHistoryList" style="margin-top: 0.8rem; max-height: 150px; overflow-y: auto;"></div>
-        <div class="import-row" style="margin-top: 0.8rem; justify-content: flex-end;">
-            <button class="btn btn-danger" id="clearAllDataBtn">⚠️ XÓA TOÀN BỘ TRUYỆN</button>
-            <button class="btn btn-warning" id="clearAllFilesHistoryBtn">🗑️ Xóa lịch sử file</button>
+        <div class="tool-group">
+            <span>🔤 Font:</span>
+            <select id="fontSelect" class="font-select">
+                <option value="'Segoe UI', Roboto, sans-serif">Mặc định</option>
+                <option value="'Merriweather', Georgia, serif">Serif</option>
+                <option value="'Noto Sans', sans-serif">Noto Sans</option>
+                <option value="'Courier New', monospace">Monospace</option>
+            </select>
+        </div>
+        <div class="tool-group">
+            <button class="tool-btn" id="decreaseFontBtn">A-</button>
+            <span id="fontSizeValue">16px</span>
+            <button class="tool-btn" id="increaseFontBtn">A+</button>
+            <button class="tool-btn" id="resetFontBtn">Reset</button>
         </div>
     </div>
 
-    <!-- GitHub Sync -->
-    <div class="github-panel">
-        <strong>🔐 GitHub Gist Sync</strong>
-        <div class="config-row">
-            <div class="config-field"><label>GitHub Token</label><input type="password" id="githubToken" placeholder="ghp_..."></div>
-            <div class="config-field"><label>Gist ID</label><input type="text" id="gistId" placeholder="vd: abc123..."></div>
-            <button class="btn btn-primary" id="saveGistConfigBtn">💾 Lưu & Tải</button>
-            <button class="btn" id="pushToGistBtn">☁️ Đẩy lên Gist</button>
+    <!-- ========== PHẦN ADMIN (chỉ hiện khi ?mode=admin) ========== -->
+    <div id="adminPanel" class="admin-only">
+        <!-- Khu vực tải file -->
+        <div class="admin-section">
+            <strong>📂 NHẬP TRUYỆN TỪ FILE</strong>
+            <div class="import-row">
+                <label class="btn btn-primary" style="cursor: pointer;">📁 JSON (nhiều truyện) <input type="file" id="uploadJsonFile" accept=".json"></label>
+                <label class="btn btn-primary" style="cursor: pointer; background: #8faa6e;">📄 Word (.docx) - thành 1 truyện <input type="file" id="uploadWordFile" accept=".docx"></label>
+                <button class="btn" id="downloadSampleJsonBtn">📥 Tải JSON mẫu</button>
+            </div>
+            <div style="font-size: 0.75rem; margin-top: 8px;">💡 Word: toàn bộ nội dung file thành 1 truyện (tên file là tên truyện)</div>
         </div>
-        <div id="syncMessage" class="sync-status"></div>
+
+        <!-- Lịch sử file đã tải -->
+        <div class="file-manager">
+            <strong>🗂️ LỊCH SỬ FILE ĐÃ TẢI</strong>
+            <div id="fileHistoryList" style="margin-top: 0.8rem; max-height: 150px; overflow-y: auto;"></div>
+            <div class="import-row" style="margin-top: 0.8rem; justify-content: flex-end;">
+                <button class="btn btn-danger" id="clearAllDataBtn">⚠️ XÓA TOÀN BỘ TRUYỆN</button>
+                <button class="btn btn-warning" id="clearAllFilesHistoryBtn">🗑️ Xóa lịch sử file</button>
+            </div>
+        </div>
+
+        <!-- GitHub Gist Sync -->
+        <div class="github-panel">
+            <strong>🔐 GitHub Gist Sync (đồng bộ đa thiết bị)</strong>
+            <div class="config-row">
+                <div class="config-field"><label>GitHub Token (cần quyền gist)</label><input type="password" id="githubToken" placeholder="ghp_..."></div>
+                <div class="config-field"><label>Gist ID</label><input type="text" id="gistId" placeholder="vd: abc123..."></div>
+                <button class="btn btn-primary" id="saveGistConfigBtn">💾 Lưu & Tải</button>
+                <button class="btn" id="pushToGistBtn">☁️ Đẩy lên Gist</button>
+            </div>
+            <div id="syncMessage" class="sync-status" style="font-size:0.75rem; margin-top:8px;"></div>
+        </div>
+
+        <!-- Thêm truyện thủ công -->
+        <div class="admin-section">
+            <strong>✍️ THÊM TRUYỆN THỦ CÔNG</strong>
+            <div class="form-grid">
+                <div class="form-group"><input type="text" id="storyName" placeholder="Tên truyện *"></div>
+                <div class="form-group"><input type="text" id="storyGenre" placeholder="Thể loại" value="Tiên hiệp"></div>
+                <div class="form-group"><input type="text" id="storyChapter" placeholder="Chương" value="Chương 1"></div>
+                <div class="form-group"><select id="storyStatus"><option value="reading">📖 Đang đọc</option><option value="want">⏳ Muốn đọc</option></select></div>
+                <div class="form-group"><input type="text" id="storyNote" placeholder="Ghi chú"></div>
+                <button class="btn btn-primary" id="addStoryBtn">+ Thêm</button>
+            </div>
+        </div>
     </div>
 
-    <!-- Thêm thủ công -->
-    <div class="admin-section">
-        <strong>✍️ Thêm truyện thủ công</strong>
-        <div class="form-grid">
-            <div class="form-group"><input type="text" id="storyName" placeholder="Tên truyện *"></div>
-            <div class="form-group"><input type="text" id="storyGenre" placeholder="Thể loại" value="Tiên hiệp"></div>
-            <div class="form-group"><input type="text" id="storyChapter" placeholder="Chương" value="Chương 1"></div>
-            <div class="form-group"><select id="storyStatus"><option value="reading">📖 Đang đọc</option><option value="want">⏳ Muốn đọc</option></select></div>
-            <div class="form-group"><input type="text" id="storyNote" placeholder="Ghi chú"></div>
-            <button class="btn btn-primary" id="addStoryBtn">+ Thêm</button>
-        </div>
-    </div>
-
-    <!-- Bộ lọc -->
+    <!-- Bộ lọc - hiển thị cho tất cả -->
     <div class="filter-bar">
-        <div class="status-filters"><div class="filter-chip active" data-filter="all">📚 Tất cả</div><div class="filter-chip" data-filter="reading">📖 Đang đọc</div><div class="filter-chip" data-filter="want">⏳ Muốn đọc</div></div>
+        <div class="status-filters">
+            <div class="filter-chip active" data-filter="all">📚 Tất cả</div>
+            <div class="filter-chip" data-filter="reading">📖 Đang đọc</div>
+            <div class="filter-chip" data-filter="want">⏳ Muốn đọc</div>
+        </div>
         <div class="search-box"><input type="text" id="searchInput" placeholder="🔍 Tìm truyện..."></div>
     </div>
+
+    <!-- Danh sách truyện -->
     <div id="storiesGrid" class="story-grid"></div>
-    <footer>⚡ Import Word: toàn bộ nội dung file sẽ thành 1 truyện, không bị tách dòng.</footer>
+    <footer>⚡ Admin: thêm ?mode=admin vào cuối URL để quản lý truyện</footer>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/mammoth@1.4.2/mammoth.browser.min.js"></script>
 <script>
+    // ==================== DỮ LIỆU ====================
     let stories = [], fileHistory = [], currentFilter = "all", searchQuery = "";
     let gistId = localStorage.getItem("truyenbox_gistId") || "";
     let githubToken = localStorage.getItem("truyenbox_token") || "";
-    const isUserMode = new URLSearchParams(window.location.search).get("mode") === "user";
+    const isAdmin = new URLSearchParams(window.location.search).get("mode") === "admin";
 
-    function persistAll() { localStorage.setItem("truyenbox_stories", JSON.stringify(stories)); localStorage.setItem("truyenbox_fileHistory", JSON.stringify(fileHistory)); }
+    // ==================== LƯU TRỮ ====================
+    function persistAll() { 
+        localStorage.setItem("truyenbox_stories", JSON.stringify(stories)); 
+        if(isAdmin) localStorage.setItem("truyenbox_fileHistory", JSON.stringify(fileHistory));
+    }
     function loadAll() {
         const saved = localStorage.getItem("truyenbox_stories");
         if(saved) try { const p = JSON.parse(saved); if(Array.isArray(p)) stories = p; } catch(e) {}
-        const hist = localStorage.getItem("truyenbox_fileHistory");
-        if(hist) try { const h = JSON.parse(hist); if(Array.isArray(h)) fileHistory = h; } catch(e) {}
-        if(stories.length === 0) stories = [{ id: "1", name: "Ví dụ", genre: "Tiên hiệp", currentChapter: "Chương 1", status: "reading", note: "Đây là truyện mẫu", content: "", createdAt: Date.now() }];
+        if(isAdmin) {
+            const hist = localStorage.getItem("truyenbox_fileHistory");
+            if(hist) try { const h = JSON.parse(hist); if(Array.isArray(h)) fileHistory = h; } catch(e) {}
+        }
+        if(stories.length === 0) stories = [{ id: "1", name: "Chào mừng đến với Truyện Box", genre: "Hướng dẫn", currentChapter: "Bắt đầu", status: "reading", note: "Đây là truyện mẫu. Admin có thể thêm truyện mới hoặc tải file JSON/Word lên.", content: "", createdAt: Date.now() }];
     }
 
+    // ==================== ADMIN: LỊCH SỬ FILE ====================
     function addFileHistory(fileName, fileType, storyCount) {
+        if(!isAdmin) return;
         fileHistory.unshift({ id: Date.now()+"_"+Math.random(), name: fileName, type: fileType, date: new Date().toLocaleString(), storyCount: storyCount });
         if(fileHistory.length > 20) fileHistory = fileHistory.slice(0,20);
         persistAll(); renderFileHistory();
     }
     function renderFileHistory() {
+        if(!isAdmin) return;
         const container = document.getElementById("fileHistoryList");
         if(!container) return;
         if(fileHistory.length === 0) { container.innerHTML = '<div style="padding:0.5rem; opacity:0.6;">📭 Chưa có file nào được tải</div>'; return; }
@@ -159,7 +216,7 @@
         document.querySelectorAll(".delete-file-btn").forEach(btn => btn.addEventListener("click", (e) => { const id = btn.getAttribute("data-id"); fileHistory = fileHistory.filter(f => f.id !== id); persistAll(); renderFileHistory(); }));
     }
 
-    // IMPORT JSON (nhiều truyện)
+    // ==================== NHẬP JSON ====================
     function importFromJson(jsonArray, fileName) {
         if(!Array.isArray(jsonArray)) throw new Error("Cần mảng JSON");
         let added = 0;
@@ -170,120 +227,144 @@
             }
         }
         if(added === 0) throw new Error("Không có truyện hợp lệ");
-        persistAll(); addFileHistory(fileName, "JSON", added); renderStories(); return added;
+        persistAll(); if(isAdmin) addFileHistory(fileName, "JSON", added); renderStories(); return added;
     }
 
-    // IMPORT WORD - TOÀN BỘ FILE THÀNH 1 TRUYỆN DUY NHẤT
+    // ==================== NHẬP WORD ====================
     async function importFromWord(file) {
         try {
             const arrayBuffer = await file.arrayBuffer();
             const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
             const fullContent = result.value.trim();
             if(!fullContent) throw new Error("File Word không có nội dung");
-            
-            // Lấy tên file làm tên truyện (bỏ đuôi .docx)
             let storyName = file.name.replace(/\.docx$/i, "").replace(/\.doc$/i, "");
             if(storyName.length > 50) storyName = storyName.substring(0, 47) + "...";
-            
             const newStory = {
                 id: "word_"+Date.now()+"_"+Math.random().toString(36).substr(2, 6),
                 name: storyName,
                 genre: "Từ Word",
                 currentChapter: "Toàn bộ nội dung",
                 status: "want",
-                note: `📄 File gốc: ${file.name} - ${new Date().toLocaleString()}\n\n📖 NỘI DUNG:\n${fullContent.substring(0, 5000)}${fullContent.length > 5000 ? "\n\n...[Nội dung dài, đã cắt bớt]..." : ""}`,
+                note: `📄 File gốc: ${file.name}\n📅 Ngày tải: ${new Date().toLocaleString()}\n\n📖 NỘI DUNG:\n${fullContent.substring(0, 5000)}${fullContent.length > 5000 ? "\n\n...[Nội dung dài, đã cắt bớt]..." : ""}`,
                 content: fullContent,
                 createdAt: Date.now()
             };
             stories.unshift(newStory);
             persistAll();
-            addFileHistory(file.name, "Word (1 truyện)", 1);
+            if(isAdmin) addFileHistory(file.name, "Word (1 truyện)", 1);
             renderStories();
             alert(`✅ Đã thêm 1 truyện từ file Word: "${storyName}"\nDung lượng: ${fullContent.length} ký tự`);
         } catch(err) { alert("Lỗi đọc Word: "+err.message); }
     }
 
+    // ==================== THAO TÁC TRUYỆN ====================
     function addStoryManually() {
+        if(!isAdmin) return;
         const name = document.getElementById("storyName").value.trim();
         if(!name){ alert("Nhập tên truyện"); return; }
         stories.unshift({ id: "id_"+Date.now()+"_"+Math.random(), name: name, genre: document.getElementById("storyGenre").value.trim()||"Chưa phân loại", currentChapter: document.getElementById("storyChapter").value.trim()||"Chương 1", status: document.getElementById("storyStatus").value, note: document.getElementById("storyNote").value.trim(), content: "", createdAt: Date.now() });
         persistAll(); renderStories();
         document.getElementById("storyName").value = ""; document.getElementById("storyNote").value = "";
-        showSyncHint();
+        if(isAdmin) showSyncHint();
     }
-    function deleteStoryById(id) { if(confirm("Xóa?")){ stories = stories.filter(s => s.id !== id); persistAll(); renderStories(); showSyncHint(); } }
-    function updateChapter(id, newChapter) { const s = stories.find(s => s.id === id); if(s){ s.currentChapter = newChapter; persistAll(); renderStories(); showSyncHint(); } }
-    function toggleStatus(id) { const s = stories.find(s => s.id === id); if(s){ s.status = s.status === "reading" ? "want" : "reading"; persistAll(); renderStories(); showSyncHint(); } }
-    function showSyncHint() { const msg = document.getElementById("syncMessage"); if(msg) msg.innerHTML = "📤 Dữ liệu thay đổi. Nhấn 'Đẩy lên Gist' để đồng bộ."; }
-    function clearAllStories() { if(confirm("Xóa TOÀN BỘ truyện?")){ stories = []; persistAll(); renderStories(); } }
+    function deleteStoryById(id) { if(confirm("Xóa truyện này?")){ stories = stories.filter(s => s.id !== id); persistAll(); renderStories(); if(isAdmin) showSyncHint(); } }
+    function updateChapter(id, newChapter) { const s = stories.find(s => s.id === id); if(s){ s.currentChapter = newChapter; persistAll(); renderStories(); if(isAdmin) showSyncHint(); } }
+    function toggleStatus(id) { const s = stories.find(s => s.id === id); if(s){ s.status = s.status === "reading" ? "want" : "reading"; persistAll(); renderStories(); if(isAdmin) showSyncHint(); } }
+    function showSyncHint() { const msg = document.getElementById("syncMessage"); if(msg && isAdmin) msg.innerHTML = "📤 Dữ liệu thay đổi. Nhấn 'Đẩy lên Gist' để đồng bộ đa thiết bị."; }
+    function clearAllStories() { if(confirm("⚠️ XÓA TOÀN BỘ TRUYỆN? Hành động này không thể hoàn tác!")){ stories = []; persistAll(); renderStories(); } }
     function clearAllFilesHistory() { if(confirm("Xóa lịch sử file?")){ fileHistory = []; persistAll(); renderFileHistory(); } }
 
+    // ==================== RENDER DANH SÁCH TRUYỆN ====================
     function renderStories() {
         const container = document.getElementById("storiesGrid");
         let filtered = stories.filter(s => currentFilter === "all" ? true : s.status === currentFilter);
         if(searchQuery.trim()) filtered = filtered.filter(s => s.name.toLowerCase().includes(searchQuery.toLowerCase()));
         filtered.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
         if(!container) return;
-        if(filtered.length === 0) { container.innerHTML = `<div class="empty-msg">📭 Chưa có truyện. Hãy tải file lên!</div>`; return; }
+        if(filtered.length === 0) { container.innerHTML = `<div class="empty-msg">📭 Chưa có truyện. ${isAdmin ? 'Hãy tải file JSON/Word lên hoặc thêm thủ công!' : 'Hãy liên hệ admin để thêm truyện.'}</div>`; return; }
         container.innerHTML = filtered.map(story => `
             <div class="story-card">
                 <div class="story-name">${escapeHtml(story.name)}</div>
                 <div class="chapter-row">📑 ${escapeHtml(story.currentChapter)}</div>
-                <div>🏷️ ${escapeHtml(story.genre)}</div>
+                <div><span class="genre-tag">🏷️ ${escapeHtml(story.genre)}</span><span class="status-badge">${story.status === "reading" ? "📖 Đang đọc" : "⏳ Muốn đọc"}</span></div>
                 <div class="story-content">${escapeHtml(story.note || "").substring(0, 300)}${(story.note?.length||0) > 300 ? "..." : ""}</div>
-                <div style="display:flex; justify-content:space-between; margin-top:8px;">
-                    <span>${story.status === "reading" ? "📖 Đang đọc" : "⏳ Muốn đọc"}</span>
-                    <div>
-                        <button class="icon-btn" data-update="${story.id}" style="background:#e0cfbc;">✏️ Sửa chương</button>
-                        <button class="icon-btn" data-toggle="${story.id}">🔄 Đổi</button>
-                        <button class="icon-btn delete-btn" data-delete="${story.id}">🗑️ Xóa</button>
-                    </div>
+                ${isAdmin ? `
+                <div style="display:flex; justify-content:flex-end; gap:6px; margin-top:8px;">
+                    <button class="icon-btn" data-update="${story.id}" style="background:#e0cfbc;">✏️ Sửa chương</button>
+                    <button class="icon-btn" data-toggle="${story.id}">🔄 Đổi trạng thái</button>
+                    <button class="icon-btn delete-btn" data-delete="${story.id}">🗑️ Xóa</button>
                 </div>
                 <div id="edit-area-${story.id}" style="display:none; margin-top:8px;">
                     <input id="chInput-${story.id}" value="${escapeHtml(story.currentChapter)}" style="width:70%; padding:4px; border-radius:30px;">
                     <button class="icon-btn" data-save="${story.id}">💾 Lưu</button>
                     <button class="icon-btn" data-cancel="${story.id}">Hủy</button>
                 </div>
+                ` : ''}
             </div>
         `).join("");
-        document.querySelectorAll("[data-update]").forEach(btn => btn.onclick = () => { const id = btn.getAttribute("data-update"); const area = document.getElementById(`edit-area-${id}`); if(area) area.style.display = "flex"; });
-        document.querySelectorAll("[data-save]").forEach(btn => btn.onclick = () => { const id = btn.getAttribute("data-save"); const input = document.getElementById(`chInput-${id}`); if(input){ updateChapter(id, input.value); document.getElementById(`edit-area-${id}`).style.display = "none"; } });
-        document.querySelectorAll("[data-cancel]").forEach(btn => btn.onclick = () => { const id = btn.getAttribute("data-cancel"); const area = document.getElementById(`edit-area-${id}`); if(area) area.style.display = "none"; });
-        document.querySelectorAll("[data-toggle]").forEach(btn => btn.onclick = () => toggleStatus(btn.getAttribute("data-toggle")));
-        document.querySelectorAll("[data-delete]").forEach(btn => btn.onclick = () => deleteStoryById(btn.getAttribute("data-delete")));
+        if(isAdmin){
+            document.querySelectorAll("[data-update]").forEach(btn => btn.onclick = () => { const id = btn.getAttribute("data-update"); const area = document.getElementById(`edit-area-${id}`); if(area) area.style.display = "flex"; });
+            document.querySelectorAll("[data-save]").forEach(btn => btn.onclick = () => { const id = btn.getAttribute("data-save"); const input = document.getElementById(`chInput-${id}`); if(input){ updateChapter(id, input.value); document.getElementById(`edit-area-${id}`).style.display = "none"; } });
+            document.querySelectorAll("[data-cancel]").forEach(btn => btn.onclick = () => { const id = btn.getAttribute("data-cancel"); const area = document.getElementById(`edit-area-${id}`); if(area) area.style.display = "none"; });
+            document.querySelectorAll("[data-toggle]").forEach(btn => btn.onclick = () => toggleStatus(btn.getAttribute("data-toggle")));
+            document.querySelectorAll("[data-delete]").forEach(btn => btn.onclick = () => deleteStoryById(btn.getAttribute("data-delete")));
+        }
     }
 
-    // GIST
-    async function loadFromGist() { if(!gistId) return; const headers = {}; if(githubToken && !isUserMode) headers["Authorization"] = `token ${githubToken}`; try { const res = await fetch(`https://api.github.com/gists/${gistId}`, { headers }); if(!res.ok) throw new Error(); const data = await res.json(); let content = null; for(let f in data.files) if(f.endsWith(".json")) { content = data.files[f].content; break; } if(content) { const parsed = JSON.parse(content); if(Array.isArray(parsed)){ stories = parsed.map(s=>({...s, id:s.id||"g_"+Math.random()})); persistAll(); renderStories(); } } } catch(e){ console.warn(e); } }
-    async function pushToGist() { if(!gistId || !githubToken) { alert("Cần Gist ID và Token"); return; } const payload = { files: { "truyenbox_data.json": { content: JSON.stringify(stories.map(s=>({name:s.name, currentChapter:s.currentChapter, genre:s.genre, status:s.status, note:s.note, content:s.content})), null, 2) } } }; try { const res = await fetch(`https://api.github.com/gists/${gistId}`, { method: "PATCH", headers: { "Authorization": `token ${githubToken}`, "Content-Type": "application/json" }, body: JSON.stringify(payload) }); if(res.ok){ document.getElementById("syncMessage").innerHTML = "✅ Đã đồng bộ!"; alert("Đẩy lên Gist thành công!"); } else throw new Error(); } catch(e){ alert("Lỗi đẩy Gist"); } }
-    function saveGistSettings(){ const newId = document.getElementById("gistId").value.trim(); if(newId){ gistId=newId; localStorage.setItem("truyenbox_gistId",gistId); } const newToken = document.getElementById("githubToken").value.trim(); if(newToken){ githubToken=newToken; localStorage.setItem("truyenbox_token",githubToken); } loadFromGist(); document.getElementById("syncMessage").innerHTML = "✅ Đã lưu cấu hình"; }
+    // ==================== GIST SYNC ====================
+    async function loadFromGist() { if(!gistId || !isAdmin) return; const headers = {}; if(githubToken) headers["Authorization"] = `token ${githubToken}`; try { const res = await fetch(`https://api.github.com/gists/${gistId}`, { headers }); if(!res.ok) throw new Error(); const data = await res.json(); let content = null; for(let f in data.files) if(f.endsWith(".json")) { content = data.files[f].content; break; } if(content) { const parsed = JSON.parse(content); if(Array.isArray(parsed)){ stories = parsed.map(s=>({...s, id:s.id||"g_"+Math.random()})); persistAll(); renderStories(); } } } catch(e){ console.warn(e); } }
+    async function pushToGist() { if(!isAdmin) { alert("Chỉ admin mới đẩy được"); return; } if(!gistId || !githubToken) { alert("Cần Gist ID và Token"); return; } const payload = { files: { "truyenbox_data.json": { content: JSON.stringify(stories.map(s=>({name:s.name, currentChapter:s.currentChapter, genre:s.genre, status:s.status, note:s.note, content:s.content})), null, 2) } } }; try { const res = await fetch(`https://api.github.com/gists/${gistId}`, { method: "PATCH", headers: { "Authorization": `token ${githubToken}`, "Content-Type": "application/json" }, body: JSON.stringify(payload) }); if(res.ok){ document.getElementById("syncMessage").innerHTML = "✅ Đã đồng bộ lên Gist!"; alert("Đẩy lên Gist thành công!"); } else throw new Error(); } catch(e){ alert("Lỗi đẩy Gist"); } }
+    function saveGistSettings(){ if(!isAdmin) return; const newId = document.getElementById("gistId").value.trim(); if(newId){ gistId=newId; localStorage.setItem("truyenbox_gistId",gistId); } const newToken = document.getElementById("githubToken").value.trim(); if(newToken){ githubToken=newToken; localStorage.setItem("truyenbox_token",githubToken); } loadFromGist(); document.getElementById("syncMessage").innerHTML = "✅ Đã lưu cấu hình"; }
 
-    function applyFontAndTheme() { const theme = localStorage.getItem("theme")||"light"; const font = localStorage.getItem("font")||"'Segoe UI', Roboto, sans-serif"; const size = localStorage.getItem("fontsize")||"16"; document.documentElement.style.setProperty('--font-family', font); document.documentElement.style.setProperty('--base-font-size', size+'px'); document.getElementById("fontSizeValue").innerText = size+"px"; if(theme==="dark") document.body.classList.add("dark-mode"); else document.body.classList.remove("dark-mode"); document.getElementById("fontSelect").value = font; }
+    // ==================== GIAO DIỆN NGƯỜI DÙNG ====================
+    function applyFontAndTheme() { const theme = localStorage.getItem("theme")||"light"; const font = localStorage.getItem("font")||"'Segoe UI', Roboto, sans-serif"; const size = localStorage.getItem("fontsize")||"16"; document.documentElement.style.setProperty('--font-family', font); document.documentElement.style.setProperty('--base-font-size', size+'px'); document.getElementById("fontSizeValue").innerText = size+"px"; if(theme==="dark") document.body.classList.add("dark-mode"); else document.body.classList.remove("dark-mode"); const fontSelect = document.getElementById("fontSelect"); if(fontSelect) fontSelect.value = font; }
     function setTheme(mode) { if(mode==="dark") document.body.classList.add("dark-mode"); else document.body.classList.remove("dark-mode"); localStorage.setItem("theme", mode); }
     function setFont(f) { document.documentElement.style.setProperty('--font-family', f); localStorage.setItem("font", f); }
     function setFontSize(delta) { let cur = parseInt(localStorage.getItem("fontsize")||"16"); let n = Math.min(28, Math.max(12, cur+delta)); localStorage.setItem("fontsize", n); document.documentElement.style.setProperty('--base-font-size', n+'px'); document.getElementById("fontSizeValue").innerText = n+"px"; }
     function resetFont() { localStorage.setItem("fontsize","16"); localStorage.setItem("font","'Segoe UI', Roboto, sans-serif"); localStorage.setItem("theme","light"); applyFontAndTheme(); document.body.classList.remove("dark-mode"); }
     function escapeHtml(str){ if(!str) return ""; return str.replace(/[&<>]/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
 
+    // ==================== KHỞI TẠO ====================
     function init() {
-        applyFontAndTheme(); loadAll(); renderFileHistory(); renderStories();
+        // Hiển thị admin panel nếu đúng mode
+        if(isAdmin) {
+            document.getElementById("adminPanel").style.display = "block";
+            document.getElementById("modeBadge").innerHTML = '<span class="admin-badge">👑 Chế độ Admin · Quản lý truyện</span>';
+        } else {
+            document.getElementById("adminPanel").style.display = "none";
+            document.getElementById("modeBadge").innerHTML = '<span class="user-badge">👤 Người dùng · Đọc truyện</span>';
+        }
+        
+        applyFontAndTheme();
+        loadAll();
+        if(isAdmin) renderFileHistory();
+        renderStories();
+        
+        // Sự kiện chung
         document.getElementById("lightModeBtn")?.addEventListener("click",()=>setTheme("light"));
         document.getElementById("darkModeBtn")?.addEventListener("click",()=>setTheme("dark"));
         document.getElementById("fontSelect")?.addEventListener("change",e=>setFont(e.target.value));
         document.getElementById("increaseFontBtn")?.addEventListener("click",()=>setFontSize(1));
         document.getElementById("decreaseFontBtn")?.addEventListener("click",()=>setFontSize(-1));
         document.getElementById("resetFontBtn")?.addEventListener("click",resetFont);
-        document.getElementById("saveGistConfigBtn")?.addEventListener("click",saveGistSettings);
-        document.getElementById("pushToGistBtn")?.addEventListener("click",pushToGist);
-        document.getElementById("addStoryBtn")?.addEventListener("click",addStoryManually);
-        document.getElementById("clearAllDataBtn")?.addEventListener("click",clearAllStories);
-        document.getElementById("clearAllFilesHistoryBtn")?.addEventListener("click",clearAllFilesHistory);
-        document.getElementById("downloadSampleJsonBtn")?.addEventListener("click",()=>{ const sample = [{name:"Truyện A", currentChapter:"Chương 10", genre:"Kiếm hiệp", status:"reading", note:"Hay"},{name:"Truyện B", currentChapter:"Chương 5", genre:"Tiên hiệp", status:"want", note:"Chưa đọc"}]; const blob=new Blob([JSON.stringify(sample,null,2)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="mau_truyen.json"; a.click(); URL.revokeObjectURL(blob); });
-        document.getElementById("uploadJsonFile")?.addEventListener("change",async(e)=>{ const file=e.target.files[0]; if(!file) return; const text=await file.text(); try{ const data=JSON.parse(text); const added = importFromJson(data, file.name); alert(`✅ Đã thêm ${added} truyện từ ${file.name}`); renderStories(); }catch(err){ alert("JSON lỗi: "+err.message); } e.target.value=""; });
-        document.getElementById("uploadWordFile")?.addEventListener("change",async(e)=>{ const file=e.target.files[0]; if(file) await importFromWord(file); e.target.value=""; });
         document.querySelectorAll(".filter-chip").forEach(chip=>chip.addEventListener("click",()=>{ currentFilter=chip.getAttribute("data-filter"); document.querySelectorAll(".filter-chip").forEach(c=>c.classList.remove("active")); chip.classList.add("active"); renderStories(); }));
         document.getElementById("searchInput")?.addEventListener("input",e=>{ searchQuery=e.target.value; renderStories(); });
-        if(gistId) loadFromGist();
+        
+        // Sự kiện admin
+        if(isAdmin) {
+            document.getElementById("saveGistConfigBtn")?.addEventListener("click",saveGistSettings);
+            document.getElementById("pushToGistBtn")?.addEventListener("click",pushToGist);
+            document.getElementById("addStoryBtn")?.addEventListener("click",addStoryManually);
+            document.getElementById("clearAllDataBtn")?.addEventListener("click",clearAllStories);
+            document.getElementById("clearAllFilesHistoryBtn")?.addEventListener("click",clearAllFilesHistory);
+            document.getElementById("downloadSampleJsonBtn")?.addEventListener("click",()=>{ const sample = [{name:"Truyện A", currentChapter:"Chương 10", genre:"Kiếm hiệp", status:"reading", note:"Hay"},{name:"Truyện B", currentChapter:"Chương 5", genre:"Tiên hiệp", status:"want", note:"Chưa đọc"}]; const blob=new Blob([JSON.stringify(sample,null,2)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="mau_truyen.json"; a.click(); URL.revokeObjectURL(blob); });
+            document.getElementById("uploadJsonFile")?.addEventListener("change",async(e)=>{ const file=e.target.files[0]; if(!file) return; const text=await file.text(); try{ const data=JSON.parse(text); const added = importFromJson(data, file.name); alert(`✅ Đã thêm ${added} truyện từ ${file.name}`); renderStories(); }catch(err){ alert("JSON lỗi: "+err.message); } e.target.value=""; });
+            document.getElementById("uploadWordFile")?.addEventListener("change",async(e)=>{ const file=e.target.files[0]; if(file) await importFromWord(file); e.target.value=""; });
+            if(gistId) loadFromGist();
+            // fill form config
+            document.getElementById("gistId").value = gistId;
+            document.getElementById("githubToken").value = githubToken;
+        }
     }
     init();
 </script>
